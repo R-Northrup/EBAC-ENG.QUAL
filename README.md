@@ -1,7 +1,7 @@
 # EBAC-ENG.QUAL
 Atividades do curso de Engenharia de Qualidade de Software da EBAC
 
-Idealmente existirão no mínimo dois arquivos:
+Idealmente existirão no mínimo dois arquivos por branch:
  - Um com a base dos exercícios;
  - Um com o exercício realizado.
 
