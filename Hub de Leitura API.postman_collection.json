@@ -1,0 +1,764 @@
+{
+  "info": {
+    "_postman_id": "a900e48b-1fe8-42be-b28c-b9a4c4065f77",
+    "name": "Hub de Leitura API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "60101151"
+  },
+  "item": [
+    {
+      "name": "Catálogo de Livros",
+      "item": [
+        {
+          "name": "Listar",
+          "item": [
+            {
+              "name": "Listar Autores",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code é 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\npm.test(\"Resposta deve conter 'authors'\", function (){\r\n    pm.expect(pm.response.json()).to.have.property('authors')\r\n});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}books/authors",
+                  "host": [
+                    "{{baseUrl}}books"
+                  ],
+                  "path": [
+                    "authors"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Listar livro com filtro",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code é 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Mais de um resultado\", function() {\r\n    pm.expect(pm.response.json().books.length).to.be.greaterThan(1);\r\n});\r\n"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}books?category=Fantasia",
+                  "host": [
+                    "{{baseUrl}}books"
+                  ],
+                  "query": [
+                    {
+                      "key": "category",
+                      "value": "Fantasia"
+                    },
+                    {
+                      "key": "orderBy",
+                      "value": "category",
+                      "disabled": true
+                    },
+                    {
+                      "key": "order",
+                      "value": "DESC",
+                      "disabled": true
+                    },
+                    {
+                      "key": "search",
+                      "value": "guerra",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Listar todos os livros",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code é 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\npm.test(\"Contém o campo 'books'\", function () {\r\n    pm.expect(pm.response.json()).to.have.property('books')\r\n});\r\n\r\npm.test(\"Confirmar que todos os livros estão sendo mostrados\", function() {\r\n    let total = pm.response.json().pagination.total;\r\n    pm.expect(pm.response.json().pagination.showing).to.be.equal(total)\r\n});\r\n"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}books?limit=50",
+                  "host": [
+                    "{{baseUrl}}books"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Listar Categorias disponíveis",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code é 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\npm.test(\"Resposta deve conter 'categories'\", function (){\r\n    pm.expect(pm.response.json()).to.have.property('categories')\r\n});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}books/categories",
+                  "host": [
+                    "{{baseUrl}}books"
+                  ],
+                  "path": [
+                    "categories"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Listar livro específico",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code é 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"O ID do livro é '6'\", function () {\r\n    pm.expect(pm.response.json().book.id).to.equal(6)\r\n});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}books/6",
+                  "host": [
+                    "{{baseUrl}}books"
+                  ],
+                  "path": [
+                    "6"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Atualizar",
+          "item": [
+            {
+              "name": "Cenários negativos",
+              "item": [
+                {
+                  "name": "Atualizar livro sem title",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code é 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Mensagem de erro correta\", function () {\r\n    pm.expect(pm.response.text()).to.include(\"title\")\r\n    });"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "PUT",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "{{token}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}books/25",
+                      "host": [
+                        "{{baseUrl}}books"
+                      ],
+                      "path": [
+                        "25"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Atualizar livro sem token",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 401\", function () {\r\n    pm.response.to.have.status(401);\r\n});\r\n\r\npm.test(\"Mensagem de erro\", function () {\r\n    pm.expect(pm.response.text()).to.include(\"Token de acesso necessário\");\r\n});\r\n\r\n"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "PUT",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"title\": \"O Cortiço 2\",\r\n  \"author\": \"Aluísio Azevedo\",\r\n  \"description\": \"Romance naturalista que retrata a vida em um cortiço\",\r\n  \"category\": \"Romance\",\r\n  \"isbn\": \"978-85-260-1320-6\",\r\n  \"editor\": \"Editora Ática\",\r\n  \"language\": \"Português\",\r\n  \"publication_year\": 1890,\r\n  \"pages\": 312,\r\n  \"format\": \"Físico\",\r\n  \"total_copies\": 4,\r\n  \"available_copies\": 4\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}books/24",
+                      "host": [
+                        "{{baseUrl}}books"
+                      ],
+                      "path": [
+                        "24"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Atualizar livro sem acesso admin",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 403\", function () {\r\n    pm.response.to.have.status(403);\r\n});\r\n\r\npm.test(\"Mensagem de erro correta\", function () {\r\n    pm.expect(pm.response.text()).to.include(\"Apenas administradores podem realizar esta ação\");\r\n});\r\n\r\n"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "PUT",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "{{token2}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"title\": \"O Cortiço 2\",\r\n  \"author\": \"Aluísio Azevedo\",\r\n  \"description\": \"Romance naturalista que retrata a vida em um cortiço\",\r\n  \"category\": \"Romance\",\r\n  \"isbn\": \"978-85-260-1320-6\",\r\n  \"editor\": \"Editora Ática\",\r\n  \"language\": \"Português\",\r\n  \"publication_year\": 1890,\r\n  \"pages\": 312,\r\n  \"format\": \"Físico\",\r\n  \"total_copies\": 4,\r\n  \"available_copies\": 4\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}books/25",
+                      "host": [
+                        "{{baseUrl}}books"
+                      ],
+                      "path": [
+                        "25"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Atualizar livro",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code é 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"O nome anterior deve ser 'Nome Livro Atualizado'\", function() {\r\n    pm.expect(pm.response.json().previousTitle).to.equal(\"Nome Livro Atualizado\")\r\n});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "{{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"title\": \"Nome Livro Atualizado2\",\r\n  \"author\": \"Autor Atualizado\",\r\n  \"description\": \"Descrição atualizada do livro\",\r\n  \"category\": \"Romance\",\r\n  \"editor\": \"Editora Atualizada\",\r\n  \"language\": \"Português\",\r\n  \"publication_year\": 2000,\r\n  \"pages\": 300,\r\n  \"format\": \"Físico\",\r\n  \"total_copies\": 10,\r\n  \"available_copies\": 5\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}books/25",
+                  "host": [
+                    "{{baseUrl}}books"
+                  ],
+                  "path": [
+                    "25"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Adicionar",
+          "item": [
+            {
+              "name": "Cenários negativos",
+              "item": [
+                {
+                  "name": "Adicionar livro já existente",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Mensagem de erro correta\", function () {\r\n    pm.expect(pm.response.text()).to.include(\"Já existe um livro com este título e autor\");\r\n});"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "{{token}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"title\": \"O Cortiço\",\r\n  \"author\": \"Aluísio Azevedo\",\r\n  \"description\": \"Romance naturalista que retrata a vida em um cortiço\",\r\n  \"category\": \"Romance\",\r\n  \"isbn\": \"978-85-260-1320-6\",\r\n  \"editor\": \"Editora Ática\",\r\n  \"language\": \"Português\",\r\n  \"publication_year\": 1890,\r\n  \"pages\": 312,\r\n  \"format\": \"Físico\",\r\n  \"total_copies\": 4,\r\n  \"available_copies\": 4\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}books",
+                      "host": [
+                        "{{baseUrl}}books"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Adicionar livro sem token",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 401\", function () {\r\n    pm.response.to.have.status(401);\r\n});\r\n\r\npm.test(\"Mensagem de erro\", function () {\r\n    pm.expect(pm.response.text()).to.include(\"Token de acesso necessário\");\r\n});\r\n\r\n"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"title\": \"O Cortiço\",\r\n  \"author\": \"Aluísio Azevedo\",\r\n  \"description\": \"Romance naturalista que retrata a vida em um cortiço\",\r\n  \"category\": \"Romance\",\r\n  \"isbn\": \"978-85-260-1320-6\",\r\n  \"editor\": \"Editora Ática\",\r\n  \"language\": \"Português\",\r\n  \"publication_year\": 1890,\r\n  \"pages\": 312,\r\n  \"format\": \"Físico\",\r\n  \"total_copies\": 4,\r\n  \"available_copies\": 4\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}books",
+                      "host": [
+                        "{{baseUrl}}books"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Adicionar livro sem acesso admin",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                          "pm.test(\"Status code is 403\", function () {\r\n    pm.response.to.have.status(403);\r\n});\r\n\r\npm.test(\"Mensagem de erro correta\", function () {\r\n    pm.expect(pm.response.text()).to.include(\"Apenas administradores podem realizar esta ação\");\r\n});\r\n\r\n"
+                        ]
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "{{token2}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"title\": \"O Cortiço\",\r\n  \"author\": \"Aluísio Azevedo\",\r\n  \"description\": \"Romance naturalista que retrata a vida em um cortiço\",\r\n  \"category\": \"Romance\",\r\n  \"isbn\": \"978-85-260-1320-6\",\r\n  \"editor\": \"Editora Ática\",\r\n  \"language\": \"Português\",\r\n  \"publication_year\": 1890,\r\n  \"pages\": 312,\r\n  \"format\": \"Físico\",\r\n  \"total_copies\": 4,\r\n  \"available_copies\": 4\r\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}books",
+                      "host": [
+                        "{{baseUrl}}books"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Adicionar livro com sucesso",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code is 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\npm.test(\"Mensagem de sucesso\", function () {\r\n    pm.expect(pm.response.text()).to.include(\"Livro criado com sucesso.\");\r\n});\r\n\r\n"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "{{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"title\": \"O Cortiço 2\",\r\n  \"author\": \"Aluísio Azevedo 2\",\r\n  \"description\": \"Romance naturalista que retrata a vida em um cortiço\",\r\n  \"category\": \"Romance\",\r\n  \"isbn\": \"978-85-260-1320-6\",\r\n  \"editor\": \"Editora Ática\",\r\n  \"language\": \"Português\",\r\n  \"publication_year\": 2026,\r\n  \"pages\": 321,\r\n  \"format\": \"Físico\",\r\n  \"total_copies\": 4,\r\n  \"available_copies\": 4\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}books",
+                  "host": [
+                    "{{baseUrl}}books"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Adicionar livro com sucesso - mínimo de dados",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code is 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\npm.test(\"Mensagem de sucesso\", function () {\r\n    pm.expect(pm.response.text()).to.include(\"Livro criado com sucesso.\");\r\n});\r\n\r\n"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "{{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"title\": \"Iracema 2\",\r\n  \"author\": \"José de Alencar Segundo\",\r\n  \"category\": \"Literatura Brasileira\",\r\n  \"total_copies\": 2\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}books",
+                  "host": [
+                    "{{baseUrl}}books"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Remover",
+      "item": [
+        {
+          "name": "Cenários negativos",
+          "item": [
+            {
+              "name": "Remover livro já deletado/não existente",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Mensagem de erro correta\", function () {\r\n    pm.expect(pm.response.text()).to.include(\"Livro não encontrado.\");\r\n});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "{{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}books/27",
+                  "host": [
+                    "{{baseUrl}}books"
+                  ],
+                  "path": [
+                    "27"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Remover livro sem acesso",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code is 401\", function () {\r\n    pm.response.to.have.status(401);\r\n});\r\n\r\npm.test(\"Mensagem de erro\", function () {\r\n    pm.expect(pm.response.text()).to.include(\"Token de acesso necessário\");\r\n});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}books/16",
+                  "host": [
+                    "{{baseUrl}}books"
+                  ],
+                  "path": [
+                    "16"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Remover livro sem acesso Admin",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code is 403\", function () {\r\n    pm.response.to.have.status(403);\r\n});\r\n\r\npm.test(\"Verificar 'requiredRole'\", function (){\r\n    pm.expect(pm.response.json().requiredRole).to.be.equal(\"admin\")\r\n});\r\n\r\npm.test(\"Mensagem de erro correta\", function () {\r\n    pm.expect(pm.response.text()).to.include(\"Apenas administradores podem realizar esta ação\");\r\n});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "{{token2}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}books/16",
+                  "host": [
+                    "{{baseUrl}}books"
+                  ],
+                  "path": [
+                    "16"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Remover livro",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code é 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Mensagem de sucesso\", function () {\r\n    pm.expect(pm.response.text()).to.include(\"Livro deletado com sucesso\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}books/26",
+              "host": [
+                "{{baseUrl}}books"
+              ],
+              "path": [
+                "26"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Logar como Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const tokenNovo = pm.response.json().token\r\npm.environment.set(\"token\", tokenNovo);\r\n\r\npm.test(\"Status code é 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Usuário é admin\", function () {\r\n    pm.expect(pm.response.json().isAdmin).to.be.true;\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"admin@biblioteca.com\",\r\n    \"password\": \"admin123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}login",
+              "host": [
+                "{{baseUrl}}login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logar sem ser admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const tokenNovo = pm.response.json().token\r\npm.environment.set(\"token2\", tokenNovo);\r\n\r\npm.test(\"Status code é 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Usuário não é admin\", function () {\r\n    pm.expect(pm.response.json().isAdmin).to.be.false;\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"usuario@teste.com\",\r\n    \"password\": \"user123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}login",
+              "host": [
+                "{{baseUrl}}login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
